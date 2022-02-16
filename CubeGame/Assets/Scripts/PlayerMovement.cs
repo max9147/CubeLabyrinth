@@ -27,11 +27,23 @@ public class PlayerMovement : MonoBehaviour
     private void ActivatePlayer()
     {
         curPlayer.GetComponent<NavMeshAgent>().SetDestination(goal.position);
+        StartCoroutine(WaitDraw());
+    }
+
+    public void DeactivatePlayer()
+    {
+        curPlayer.GetComponent<NavMeshAgent>().speed = 0;
     }
 
     private IEnumerator SpawnWaitTime()
     {
         yield return new WaitForSeconds(2f);        
         ActivatePlayer();
+    }
+
+    private IEnumerator WaitDraw()
+    {
+        yield return new WaitForSeconds(0.1f);
+        curPlayer.GetComponent<PathRenderer>().DrawPath();
     }
 }

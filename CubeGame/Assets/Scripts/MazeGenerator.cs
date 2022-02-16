@@ -36,6 +36,7 @@ public class MazeGenerator : MonoBehaviour
                 c.WallBottom.SetActive(maze[x, y].WallBottom);
             }
         }
+        GetComponent<NavMeshGenerator>().BakeNavMesh();
     }
 
     public MazeCell[,] GenerateMaze()

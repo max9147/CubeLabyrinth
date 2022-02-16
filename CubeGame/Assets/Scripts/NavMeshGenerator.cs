@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class NavMeshGenerator : MonoBehaviour
 {
-    public List<NavMeshSurface> surfaces;
+    [SerializeField] private List<NavMeshSurface> surfaces;
 
     public void BakeNavMesh()
     {

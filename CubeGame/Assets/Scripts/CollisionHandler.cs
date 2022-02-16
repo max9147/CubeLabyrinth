@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
-    public GameObject gameSystems;
+    [SerializeField] private ParticleSystem explodePS;
+    [SerializeField] private ParticleSystem confettiPS;
+
+    private GameObject gameSystems;
 
     private void Start()
     {
@@ -15,6 +18,7 @@ public class CollisionHandler : MonoBehaviour
     {
         if (other.CompareTag("Goal"))
         {
+            Instantiate(confettiPS, transform.position, Quaternion.identity);
             StartCoroutine(gameSystems.GetComponent<LevelWin>().WinDelay());
         }
     }
@@ -25,8 +29,9 @@ public class CollisionHandler : MonoBehaviour
         {
             if (!gameSystems.GetComponent<Shield>().GetStatus())
             {
-                gameSystems.GetComponent<PlayerMovement>().SpawnPlayer();
                 Destroy(this.gameObject);
+                gameSystems.GetComponent<PlayerMovement>().SpawnPlayer();
+                Instantiate(explodePS, transform.position, Quaternion.identity);
             }
         }
     }
