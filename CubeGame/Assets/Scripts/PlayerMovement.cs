@@ -1,15 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject playerCube;
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private Transform goal;
+    [SerializeField] private GameObject _playerCube;
+    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private Transform _goal;
+    [SerializeField] private GameSettings _gameSettings;
 
-    private GameObject curPlayer;
+    private GameObject _curPlayer;
 
     private void Start()
     {
@@ -19,31 +19,32 @@ public class PlayerMovement : MonoBehaviour
     public void SpawnPlayer()
     {
         GetComponent<NavMeshGenerator>().BakeNavMesh();
-        curPlayer = Instantiate(playerCube, spawnPoint.position, Quaternion.identity);
-        GetComponent<Shield>().SetPlayer(curPlayer);
+        _curPlayer = Instantiate(_playerCube, _spawnPoint.position, Quaternion.identity);
+        _curPlayer.GetComponent<NavMeshAgent>().speed = _gameSettings.CubeSpeed;
+        GetComponent<Shield>().SetPlayer(_curPlayer);
         StartCoroutine(SpawnWaitTime());
     }
 
     private void ActivatePlayer()
     {
-        curPlayer.GetComponent<NavMeshAgent>().SetDestination(goal.position);
+        _curPlayer.GetComponent<NavMeshAgent>().SetDestination(_goal.position);
         StartCoroutine(WaitDraw());
     }
 
     public void DeactivatePlayer()
     {
-        curPlayer.GetComponent<NavMeshAgent>().speed = 0;
+        _curPlayer.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     private IEnumerator SpawnWaitTime()
     {
-        yield return new WaitForSeconds(2f);        
+        yield return new WaitForSeconds(2f);
         ActivatePlayer();
     }
 
     private IEnumerator WaitDraw()
     {
         yield return new WaitForSeconds(0.1f);
-        curPlayer.GetComponent<PathRenderer>().DrawPath();
+        _curPlayer.GetComponent<PathRenderer>().DrawPath();
     }
 }

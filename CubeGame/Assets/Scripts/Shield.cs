@@ -1,55 +1,59 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Shield : MonoBehaviour
 {
-    [SerializeField] Slider shieldSlider;
-    [SerializeField] Material materialShielded;
-    [SerializeField] Material materialNormal;
+    [SerializeField] private Slider _shieldSlider;
+    [SerializeField] private Material _materialShielded;
+    [SerializeField] private Material _materialNormal;
+    [SerializeField] private GameSettings _gameSettings;
 
-    private GameObject player;
-    private float shieldTime = 2f;
-    private bool isShielded = false;
+    private GameObject _player;
+    private float _shieldTime = 2f;
+    private bool _isShielded = false;
+
+    private void Awake()
+    {
+        _shieldTime = _gameSettings.ShieldTime;
+        _shieldSlider.maxValue = _gameSettings.ShieldTime;
+    }
 
     private void FixedUpdate()
     {
-        if (shieldTime <= 0)
+        if (_shieldTime <= 0)
+            DeactivateShield();
+
+        if (_isShielded)
         {
-            isShielded = false;
+            _shieldTime -= Time.deltaTime;
+            _shieldSlider.value = _shieldTime;
         }
-        if (isShielded)
+        else if (_shieldTime <= _gameSettings.ShieldTime)
         {
-            shieldTime -= Time.deltaTime;
-            shieldSlider.value = shieldTime;
+            _shieldTime += Time.deltaTime;
+            _shieldSlider.value = _shieldTime;
         }
-        else if (shieldTime <= 2f)
-        {
-            shieldTime += Time.deltaTime;
-            shieldSlider.value = shieldTime;
-        }    
     }
 
     public void SetPlayer(GameObject curPlayer)
     {
-        player = curPlayer;
+        _player = curPlayer;
     }
 
     public void ActivateShield()
     {
-        isShielded = true;
-        player.GetComponent<Renderer>().material = materialShielded;
+        _isShielded = true;
+        _player.GetComponent<Renderer>().material = _materialShielded;
     }
 
     public void DeactivateShield()
     {
-        isShielded = false;
-        player.GetComponent<Renderer>().material = materialNormal;
+        _isShielded = false;
+        _player.GetComponent<Renderer>().material = _materialNormal;
     }
 
     public bool GetStatus()
     {
-        return isShielded;
+        return _isShielded;
     }
 }

@@ -1,25 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem explodePS;
-    [SerializeField] private ParticleSystem confettiPS;
+    [SerializeField] private ParticleSystem _explodePS;
+    [SerializeField] private ParticleSystem _confettiPS;
 
-    private GameObject gameSystems;
+    private GameObject _gameSystems;
 
     private void Start()
     {
-        gameSystems = GameObject.Find("GameSystems");
+        _gameSystems = GameObject.Find("GameSystems");
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Goal"))
         {
-            Instantiate(confettiPS, transform.position, Quaternion.identity);
-            StartCoroutine(gameSystems.GetComponent<LevelWin>().WinDelay());
+            Instantiate(_confettiPS, transform.position, Quaternion.identity);
+            StartCoroutine(_gameSystems.GetComponent<LevelWin>().WinDelay());
         }
     }
 
@@ -27,11 +25,11 @@ public class CollisionHandler : MonoBehaviour
     {
         if (other.CompareTag("DeathTrap"))
         {
-            if (!gameSystems.GetComponent<Shield>().GetStatus())
+            if (!_gameSystems.GetComponent<Shield>().GetStatus())
             {
-                Destroy(this.gameObject);
-                gameSystems.GetComponent<PlayerMovement>().SpawnPlayer();
-                Instantiate(explodePS, transform.position, Quaternion.identity);
+                Destroy(gameObject);
+                _gameSystems.GetComponent<PlayerMovement>().SpawnPlayer();
+                Instantiate(_explodePS, transform.position, Quaternion.identity);
             }
         }
     }

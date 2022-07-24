@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +12,11 @@ public class MazeCell
 
 public class MazeGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject mazePart;
+    [SerializeField] private GameObject _mazePart;
+    [SerializeField] private Transform _mazeContainer;
 
-    private int mazeWidth = 11;
-    private int mazeHeight = 11;
+    private int _mazeWidth = 11;
+    private int _mazeHeight = 11;
 
     private void Start()
     {
@@ -31,7 +31,8 @@ public class MazeGenerator : MonoBehaviour
         {
             for (int y = 0; y < maze.GetLength(1); y++)
             {
-                MazeCellData c = Instantiate(mazePart, new Vector3(x * 2, 0, y * 2), Quaternion.identity).GetComponent<MazeCellData>();
+                MazeCellData c = Instantiate(_mazePart, new Vector3(x * 2, 0, y * 2), Quaternion.identity).GetComponent<MazeCellData>();
+                c.transform.parent = _mazeContainer;
                 c.WallLeft.SetActive(maze[x, y].WallLeft);
                 c.WallBottom.SetActive(maze[x, y].WallBottom);
             }
@@ -41,7 +42,7 @@ public class MazeGenerator : MonoBehaviour
 
     public MazeCell[,] GenerateMaze()
     {
-        MazeCell[,] maze = new MazeCell[mazeWidth, mazeHeight];
+        MazeCell[,] maze = new MazeCell[_mazeWidth, _mazeHeight];
         for (int x = 0; x < maze.GetLength(0); x++)
         {
             for (int y = 0; y < maze.GetLength(1); y++)
@@ -52,12 +53,12 @@ public class MazeGenerator : MonoBehaviour
 
         for (int x = 0; x < maze.GetLength(0); x++)
         {
-            maze[x, mazeHeight - 1].WallLeft = false;
+            maze[x, _mazeHeight - 1].WallLeft = false;
         }
 
         for (int y = 0; y < maze.GetLength(1); y++)
         {
-            maze[mazeWidth - 1, y].WallBottom = false;
+            maze[_mazeWidth - 1, y].WallBottom = false;
         }
 
         RemoveWalls(maze);
@@ -76,10 +77,14 @@ public class MazeGenerator : MonoBehaviour
             int x = current.X;
             int y = current.Y;
 
-            if (x > 0 && !maze[x - 1, y].Visited) unvisited.Add(maze[x - 1, y]);
-            if (y > 0 && !maze[x, y - 1].Visited) unvisited.Add(maze[x, y - 1]);
-            if (x < mazeWidth - 2 && !maze[x + 1, y].Visited) unvisited.Add(maze[x + 1, y]);
-            if (y < mazeHeight - 2 && !maze[x, y + 1].Visited) unvisited.Add(maze[x, y + 1]);
+            if (x > 0 && !maze[x - 1, y].Visited)
+                unvisited.Add(maze[x - 1, y]);
+            if (y > 0 && !maze[x, y - 1].Visited)
+                unvisited.Add(maze[x, y - 1]);
+            if (x < _mazeWidth - 2 && !maze[x + 1, y].Visited)
+                unvisited.Add(maze[x + 1, y]);
+            if (y < _mazeHeight - 2 && !maze[x, y + 1].Visited)
+                unvisited.Add(maze[x, y + 1]);
 
             if (unvisited.Count > 0)
             {
@@ -101,13 +106,17 @@ public class MazeGenerator : MonoBehaviour
     {
         if (a.X == b.X)
         {
-            if (a.Y > b.Y) a.WallBottom = false;
-            else b.WallBottom = false;
+            if (a.Y > b.Y)
+                a.WallBottom = false;
+            else
+                b.WallBottom = false;
         }
         else
         {
-            if (a.X > b.X) a.WallLeft = false;
-            else b.WallLeft = false;
+            if (a.X > b.X)
+                a.WallLeft = false;
+            else
+                b.WallLeft = false;
         }
-    }    
+    }
 }
